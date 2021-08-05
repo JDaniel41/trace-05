@@ -1,25 +1,42 @@
-import logo from './logo.svg';
-import './App.css';
+import Footer from "./components/Footer";
+import Header from "./components/Header";
+import TextPad from "./components/TextPad";
+import { useEffect, useState } from "react";
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    const [notesText, setNotesText] = useState("");
+    const [headerStatusText, setHeaderStatusText] = useState("");
+
+    function handleTextChange(e) {
+        setNotesText(e.target.value);
+        setHeaderStatusText("Text is Unsaved");
+    }
+
+    function indicateNotesAreSaved() {
+        setHeaderStatusText("Saved Text!");
+    }
+
+    useEffect(() => {
+        let storedVal = localStorage.getItem("savedNotes");
+
+        setNotesText(storedVal ? storedVal : "Enter Notes Here!");
+        setHeaderStatusText("Loaded!");
+
+        console.log(localStorage.getItem("savedNotes"));
+    }, []);
+
+    return (
+        <div className="flex flex-col w-screen h-screen border-1 border-black">
+            <Header statusText={headerStatusText} />
+            <div className="h-full block">
+                <TextPad onChange={handleTextChange} text={notesText} />
+            </div>
+            <Footer
+                currentText={notesText}
+                indicatedSaved={indicateNotesAreSaved}
+            />
+        </div>
+    );
 }
 
 export default App;
